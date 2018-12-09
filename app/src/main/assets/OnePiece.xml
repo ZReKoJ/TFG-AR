@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
+  <Tracking>
+    <ImageTarget name="Z" size="0.247 0.173" />
+    <ImageTarget name="robin" size="0.247 0.173" />
+    <ImageTarget name="chopper" size="0.247 0.173" />
+    <ImageTarget name="usopp" size="0.247 0.173" />
+    <ImageTarget name="brook" size="0.247 0.173" />
+    <ImageTarget name="sanji" size="0.247 0.173" />
+    <ImageTarget name="jinbei" size="0.247 0.173" />
+    <ImageTarget name="franky" size="0.247 0.173" />
+    <ImageTarget name="nami" size="0.247 0.173" />
+    <ImageTarget name="zoro" size="0.247 0.173" />
+    <ImageTarget name="luffy" size="0.247 0.173" />
+  </Tracking>
+</QCARConfig>
