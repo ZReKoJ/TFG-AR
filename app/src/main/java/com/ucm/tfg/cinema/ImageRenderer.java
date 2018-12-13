@@ -21,12 +21,12 @@ import java.util.Vector;
  *
  * In the renderFrame() function you can render augmentations to display over the Target
  */
-public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRendererControl
+public class ImageRenderer implements GLSurfaceView.Renderer, SampleAppRendererControl
 {
-    private static final String LOGTAG = "ImageTargetRenderer";
+    private static final String LOGTAG = "ImageRenderer";
 
     private final SampleApplicationSession vuforiaAppSession;
-    private final WeakReference<ImageTargets2> mActivityRef;
+    private final WeakReference<ImageTargetActivity> mActivityRef;
     private final SampleAppRenderer mSampleAppRenderer;
 
     private Vector<Texture> mTextures;
@@ -48,7 +48,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
 
     private static final float OBJECT_SCALE_FLOAT = 0.003f;
 
-    ImageTargetRenderer(ImageTargets2 activity, SampleApplicationSession session)
+    ImageRenderer(ImageTargetActivity activity, SampleApplicationSession session)
     {
         mActivityRef = new WeakReference<>(activity);
         vuforiaAppSession = session;
@@ -160,8 +160,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
             }
 
             // Hide the Loading Dialog
-            mActivityRef.get().loadingDialogHandler
-                    .sendEmptyMessage(LoadingDialogHandler.HIDE_LOADING_DIALOG);
+            //mActivityRef.get().loadingDialogHandler.sendEmptyMessage(LoadingDialogHandler.HIDE_LOADING_DIALOG);
         }
     }
 
@@ -229,7 +228,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
                     case "Z": textureIndex = 0; break;
                 }
 
-                textureIndex = mActivityRef.get().isDeviceTrackingActive() ? 3 : textureIndex;
+                //textureIndex = mActivityRef.get().isDeviceTrackingActive() ? 3 : textureIndex;
 
                 renderModel(projectionMatrix, devicePoseMattix.getData(), modelMatrix.getData(), textureIndex);
 
@@ -247,7 +246,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
         float[] modelViewProjection = new float[16];
 
         // Apply local transformation to our model
-        if (mActivityRef.get().isDeviceTrackingActive())
+        if (false) //mActivityRef.get().isDeviceTrackingActive())
         {
             Matrix.translateM(modelMatrix, 0, 0, -0.06f, 0);
             Matrix.rotateM(modelMatrix, 0, 90.0f, 1.0f, 0, 0);
@@ -287,7 +286,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, modelViewProjection, 0);
 
         // Finally draw the model
-        if (mActivityRef.get().isDeviceTrackingActive())
+        if (false) //mActivityRef.get().isDeviceTrackingActive())
         {
             GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, model.getNumObjectVertex());
         }

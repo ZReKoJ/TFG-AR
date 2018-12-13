@@ -43,7 +43,7 @@ import java.util.Vector;
  * For ImageTarget-specific rendering, check out ImageTargetRenderer.java
  * For the low-level Vuforia lifecycle code, check out SampleApplicationSession.java
  */
-public class ImageTargets extends Activity implements SampleApplicationControl,
+public class ImageTargets extends ImageTargets2 implements SampleApplicationControl,
         SampleAppMenuInterface
 {
     private static final String LOGTAG = "ImageTargets";
