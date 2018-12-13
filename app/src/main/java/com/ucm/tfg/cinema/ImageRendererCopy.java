@@ -14,6 +14,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -21,15 +22,16 @@ import java.util.Vector;
  *
  * In the renderFrame() function you can render augmentations to display over the Target
  */
-public class ImageRenderer implements GLSurfaceView.Renderer, SampleAppRendererControl
+public class ImageRendererCopy implements GLSurfaceView.Renderer, SampleAppRendererControl
 {
-    private static final String LOGTAG = "ImageRenderer";
+    private static final String LOGTAG = "ImageRendererCopy";
 
     private final SampleApplicationSession vuforiaAppSession;
     private final WeakReference<ImageTargetActivity> mActivityRef;
     private final SampleAppRenderer mSampleAppRenderer;
 
-    private Vector<Texture> mTextures;
+    private HashMap<String, Texture> textures;
+    private HashMap<String, String> targets;
 
     private int shaderProgramID;
     private int vertexHandle;
@@ -40,7 +42,6 @@ public class ImageRenderer implements GLSurfaceView.Renderer, SampleAppRendererC
     // Object to be rendered
     private Teapot mTeapot;
 
-    private static final float BUILDING_SCALE = 0.012f;
     private SampleApplication3DModel mBuildingsModel;
 
     private boolean mIsActive = false;
@@ -48,15 +49,14 @@ public class ImageRenderer implements GLSurfaceView.Renderer, SampleAppRendererC
 
     private static final float OBJECT_SCALE_FLOAT = 0.003f;
 
-    ImageRenderer(ImageTargetActivity activity, SampleApplicationSession session)
+    ImageRendererCopy(ImageTargetActivity activity, SampleApplicationSession session)
     {
         mActivityRef = new WeakReference<>(activity);
         vuforiaAppSession = session;
 
         // SampleAppRenderer used to encapsulate the use of RenderingPrimitives setting
         // the device mode AR/VR and stereo mode
-        mSampleAppRenderer = new SampleAppRenderer(this, mActivityRef.get(), Device.MODE.MODE_AR,
-                false, 0.01f , 5f);
+        mSampleAppRenderer = new SampleAppRenderer(this, mActivityRef.get(), Device.MODE.MODE_AR,false, 0.01f , 5f);
     }
 
 
@@ -121,17 +121,17 @@ public class ImageRenderer implements GLSurfaceView.Renderer, SampleAppRendererC
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, Vuforia.requiresAlpha() ? 0.0f
                 : 1.0f);
 
-        for (Texture t : mTextures)
+        for (HashMap.Entry<String, Texture> entry : textures.entrySet())
         {
-            GLES20.glGenTextures(1, t.mTextureID, 0);
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, t.mTextureID[0]);
+            GLES20.glGenTextures(1, entry.getValue().mTextureID, 0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, entry.getValue().mTextureID[0]);
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);
             GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
                     GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
             GLES20.glTexImage2D(GLES20.GL_TEXTURE_2D, 0, GLES20.GL_RGBA,
-                    t.mWidth, t.mHeight, 0, GLES20.GL_RGBA,
-                    GLES20.GL_UNSIGNED_BYTE, t.mData);
+                    entry.getValue().mWidth, entry.getValue().mHeight, 0, GLES20.GL_RGBA,
+                    GLES20.GL_UNSIGNED_BYTE, entry.getValue().mData);
         }
 
         shaderProgramID = SampleUtils.createProgramFromShaderSrc(
@@ -215,7 +215,7 @@ public class ImageRenderer implements GLSurfaceView.Renderer, SampleAppRendererC
                     case "stones": textureIndex = 0; break;
                     case "chips": textureIndex = 1; break;
                     case "tarmac": textureIndex = 2; break;
-                    case "luffy": textureIndex = 0; break;
+                    case "luffy": textureIndex = 1; break;
                     case "zoro": textureIndex = 0; break;
                     case "nami": textureIndex = 0; break;
                     case "franky": textureIndex = 0; break;
@@ -228,9 +228,7 @@ public class ImageRenderer implements GLSurfaceView.Renderer, SampleAppRendererC
                     case "Z": textureIndex = 0; break;
                 }
 
-                //textureIndex = mActivityRef.get().isDeviceTrackingActive() ? 3 : textureIndex;
-
-                renderModel(projectionMatrix, devicePoseMattix.getData(), modelMatrix.getData(), textureIndex);
+                renderModel(projectionMatrix, devicePoseMattix.getData(), modelMatrix.getData(), textures.get(targets.get(trackable.getName())));
 
                 SampleUtils.checkGLError("Image Targets renderFrame");
             }
@@ -240,27 +238,15 @@ public class ImageRenderer implements GLSurfaceView.Renderer, SampleAppRendererC
     }
 
 
-    private void renderModel(float[] projectionMatrix, float[] viewMatrix, float[] modelMatrix, int textureIndex)
+    private void renderModel(float[] projectionMatrix, float[] viewMatrix, float[] modelMatrix, Texture texture)
     {
         MeshObject model;
         float[] modelViewProjection = new float[16];
 
-        // Apply local transformation to our model
-        if (false) //mActivityRef.get().isDeviceTrackingActive())
-        {
-            Matrix.translateM(modelMatrix, 0, 0, -0.06f, 0);
-            Matrix.rotateM(modelMatrix, 0, 90.0f, 1.0f, 0, 0);
-            Matrix.scaleM(modelMatrix, 0, BUILDING_SCALE, BUILDING_SCALE, BUILDING_SCALE);
+        Matrix.translateM(modelMatrix, 0, 0, 0, OBJECT_SCALE_FLOAT);
+        Matrix.scaleM(modelMatrix, 0, OBJECT_SCALE_FLOAT, OBJECT_SCALE_FLOAT, OBJECT_SCALE_FLOAT);
 
-            model = mBuildingsModel;
-        }
-        else
-        {
-            Matrix.translateM(modelMatrix, 0, 0, 0, OBJECT_SCALE_FLOAT);
-            Matrix.scaleM(modelMatrix, 0, OBJECT_SCALE_FLOAT, OBJECT_SCALE_FLOAT, OBJECT_SCALE_FLOAT);
-
-            model = mTeapot;
-        }
+        model = mTeapot;
 
         // Combine device pose (view matrix) with model matrix
         Matrix.multiplyMM(modelMatrix, 0, viewMatrix, 0, modelMatrix, 0);
@@ -279,31 +265,27 @@ public class ImageRenderer implements GLSurfaceView.Renderer, SampleAppRendererC
 
         // Activate texture 0, bind it, pass to shader
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextures.get(textureIndex).mTextureID[0]);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture.mTextureID[0]);
         GLES20.glUniform1i(texSampler2DHandle, 0);
 
         // Pass the model view matrix to the shader
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, modelViewProjection, 0);
 
         // Finally draw the model
-        if (false) //mActivityRef.get().isDeviceTrackingActive())
-        {
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, model.getNumObjectVertex());
-        }
-        else
-        {
-            GLES20.glDrawElements(GLES20.GL_TRIANGLES, model.getNumObjectIndex(), GLES20.GL_UNSIGNED_SHORT, model.getIndices());
-        }
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, model.getNumObjectIndex(), GLES20.GL_UNSIGNED_SHORT, model.getIndices());
 
         // Disable the enabled arrays
         GLES20.glDisableVertexAttribArray(vertexHandle);
         GLES20.glDisableVertexAttribArray(textureCoordHandle);
     }
 
-
-    public void setTextures(Vector<Texture> textures)
+    public void setTextures(HashMap<String, Texture> textures)
     {
-        mTextures = textures;
+        this.textures = textures;
+    }
+
+    public void setTargets(HashMap<String, String> targets) {
+        this.targets = targets;
     }
 }
 

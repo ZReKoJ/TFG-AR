@@ -4,17 +4,13 @@ import android.app.ActionBar
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams;
-import android.widget.RelativeLayout
 import com.ucm.tfg.cinema.SampleApplication.SampleApplicationControl
 import com.ucm.tfg.cinema.SampleApplication.SampleApplicationException
 import com.ucm.tfg.cinema.SampleApplication.SampleApplicationSession
-import com.ucm.tfg.cinema.SampleApplication.utils.LoadingDialogHandler
 import com.ucm.tfg.cinema.SampleApplication.utils.SampleApplicationGLView
 import com.ucm.tfg.cinema.SampleApplication.utils.Texture
 import com.vuforia.*
@@ -205,10 +201,8 @@ class ImageTargetActivity : Activity(), SampleApplicationControl {
 
         renderer = ImageRenderer(this, vuforiaAppSession)
 
-        var res = Vector<Texture>()
-        textures.forEach { (key, value) -> res.add(value) }
-
-        renderer.setTextures(res)
+        renderer.setTextures(textures)
+        renderer.setTargets(targets)
 
         graphics.setRenderer(renderer)
 
