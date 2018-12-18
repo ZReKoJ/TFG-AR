@@ -28,6 +28,8 @@
         </activity>
         <activity android:name=".ImageTargets2">
         </activity>
+        <activity android:name=".CloudReco">
+        </activity>
     </application>
 
 </manifest>

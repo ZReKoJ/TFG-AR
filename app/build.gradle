@@ -13,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.ucm.tfg.cinema"
+        applicationId "com.ucm.tfg.vuforiaTest"
         minSdkVersion 22
         targetSdkVersion 28
         versionCode 1

@@ -222,26 +222,7 @@ class ImageRenderer constructor(activity: ImageTargetActivity, session: SampleAp
             val trackable = result.trackable
 
             if (result.isOfType(ImageTargetResult.getClassType())) {
-                var textureIndex = 0
                 modelMatrix = Tool.convertPose2GLMatrix(result.pose)
-
-                Log.e(LOGTAG, trackable.name)
-                when (trackable.name) {
-                    "stones" -> textureIndex = 0
-                    "chips" -> textureIndex = 1
-                    "tarmac" -> textureIndex = 2
-                    "luffy" -> textureIndex = 1
-                    "zoro" -> textureIndex = 0
-                    "nami" -> textureIndex = 0
-                    "franky" -> textureIndex = 0
-                    "jinbei" -> textureIndex = 0
-                    "sanji" -> textureIndex = 0
-                    "brook" -> textureIndex = 0
-                    "usopp" -> textureIndex = 0
-                    "chopper" -> textureIndex = 0
-                    "robin" -> textureIndex = 0
-                    "Z" -> textureIndex = 0
-                }
 
                 renderModel(
                     projectionMatrix,

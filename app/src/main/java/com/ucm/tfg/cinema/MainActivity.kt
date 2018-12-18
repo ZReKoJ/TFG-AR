@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         arButton.setOnClickListener {
-            val intent = Intent(this, ImageTargetActivity::class.java)
+            val intent = Intent(this, CloudReco::class.java)
             startActivity(intent)
         }
     }
