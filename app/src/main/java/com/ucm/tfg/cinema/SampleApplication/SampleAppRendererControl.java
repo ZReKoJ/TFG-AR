@@ -17,7 +17,7 @@ import com.vuforia.State;
  */
 public interface SampleAppRendererControl
 {
-    // This method must be implemented by the Renderer class that handles the content rendering.
+    // This method must be implemented by the CloudRenderer class that handles the content rendering.
     // This function is called for each view inside of a loop
     void renderFrame(State state, float[] projectionMatrix);
 

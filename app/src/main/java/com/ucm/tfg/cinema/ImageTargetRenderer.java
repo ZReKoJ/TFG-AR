@@ -176,7 +176,7 @@ public class ImageTargetRenderer implements GLSurfaceView.Renderer, SampleAppRen
     // NOTE: State should not be cached outside this method.
     public void renderFrame(State state, float[] projectionMatrix)
     {
-        // Renders video background replacing Renderer.DrawVideoBackground()
+        // Renders video background replacing CloudRenderer.DrawVideoBackground()
         mSampleAppRenderer.renderVideoBackground(state);
 
         // Set the device pose matrix as identity

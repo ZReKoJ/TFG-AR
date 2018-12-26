@@ -30,6 +30,10 @@
         </activity>
         <activity android:name=".CloudReco">
         </activity>
+        <activity android:name=".CloudReco2">
+        </activity>
+        <activity android:name=".CloudRecoActivity">
+        </activity>
     </application>
 
 </manifest>

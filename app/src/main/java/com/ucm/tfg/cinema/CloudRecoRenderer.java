@@ -37,11 +37,11 @@ public class CloudRecoRenderer implements GLSurfaceView.Renderer, SampleAppRende
     // Object to be rendered
     private Teapot mTeapot;
 
-    private final CloudReco mActivity;
+    private final CloudReco2 mActivity;
 
     private boolean mIsActive = false;
 
-    CloudRecoRenderer(SampleApplicationSession session, CloudReco activity)
+    CloudRecoRenderer(SampleApplicationSession session, CloudReco2 activity)
     {
         vuforiaAppSession = session;
         mActivity = activity;
@@ -144,7 +144,7 @@ public class CloudRecoRenderer implements GLSurfaceView.Renderer, SampleAppRende
     // NOTE: State should not be cached outside this method.
     public void renderFrame(State state, float[] projectionMatrix)
     {
-        // Renders video background replacing Renderer.DrawVideoBackground()
+        // Renders video background replacing CloudRenderer.DrawVideoBackground()
         mSampleAppRenderer.renderVideoBackground(state);
 
         // Set the device pose matrix as identity

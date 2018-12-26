@@ -43,7 +43,7 @@ import java.util.Vector;
  * For CloudReco-specific rendering, check out CloudRecoRenderer.java
  * For the low-level Vuforia lifecycle code, check out SampleApplicationSession.java
  */
-public class CloudReco extends Activity implements SampleApplicationControl,
+public class CloudReco extends CloudReco2 implements SampleApplicationControl,
         SampleAppMenuInterface
 {
     private static final String LOGTAG = "CloudReco";
@@ -306,7 +306,7 @@ public class CloudReco extends Activity implements SampleApplicationControl,
         mGlView = new SampleApplicationGLView(this);
         mGlView.init(translucent, depthSize, stencilSize);
 
-        // Sets up the Renderer of the GLView
+        // Sets up the CloudRenderer of the GLView
         mRenderer = new CloudRecoRenderer(vuforiaAppSession, this);
         mRenderer.setTextures(mTextures);
         mGlView.setRenderer(mRenderer);

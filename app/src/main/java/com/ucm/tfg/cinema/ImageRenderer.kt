@@ -194,7 +194,7 @@ class ImageRenderer constructor(activity: ImageTargetActivity, session: SampleAp
     }
 
     override fun renderFrame(state: State?, projectionMatrix: FloatArray?) {
-        // Renders video background replacing Renderer.DrawVideoBackground()
+        // Renders video background replacing CloudRenderer.DrawVideoBackground()
         renderer.renderVideoBackground(state)
 
         // Set the device pose matrix as identity
