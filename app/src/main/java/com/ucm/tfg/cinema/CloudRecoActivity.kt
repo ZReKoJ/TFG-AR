@@ -32,6 +32,8 @@ class CloudRecoActivity : Activity(), SampleApplicationControl {
 
     // texture name - texture
     private var textures = HashMap<String, Texture>()
+    // target name - texture name
+    private var targets = HashMap<String, String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,11 +75,27 @@ class CloudRecoActivity : Activity(), SampleApplicationControl {
         }
 
         textures.clear()
+        targets.clear()
 
         System.gc()
     }
 
     private fun loadData() {
+        targets["stones"] = "teapotBrass"
+        targets["chips"] = "teapotBlue"
+        targets["tarmac"] = "teapotRed"
+        targets["luffy"] = "teapotBrass"
+        targets["zoro"] = "teapotBlue"
+        targets["nami"] = "teapotRed"
+        targets["franky"] = "teapotBrass"
+        targets["jinbei"] = "teapotBlue"
+        targets["sanji"] = "teapotRed"
+        targets["brook"] = "teapotBrass"
+        targets["usopp"] = "teapotBlue"
+        targets["chopper"] = "teapotRed"
+        targets["robin"] = "teapotBrass"
+        targets["Z"] = "teapotBlue"
+
         textures["teapotBrass"] = Texture.loadTextureFromApk( "TextureTeapotBrass.png", assets)
         textures["teapotBlue"] = Texture.loadTextureFromApk( "TextureTeapotBlue.png", assets)
         textures["teapotRed"] = Texture.loadTextureFromApk( "TextureTeapotRed.png", assets)
@@ -187,6 +205,7 @@ class CloudRecoActivity : Activity(), SampleApplicationControl {
         }
 
         renderer.setTextures(textures)
+        renderer.setTargets(targets)
 
         graphics.setRenderer(renderer)
 

@@ -31,11 +31,16 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
     }
 
     private lateinit var textures: HashMap<String, Texture>
+    private lateinit var targets: HashMap<String, String>
 
     private lateinit var teapot : Teapot
 
     fun setTextures(textures: HashMap<String, Texture>) {
         this.textures = textures
+    }
+
+    fun setTargets(targets: HashMap<String, String>) {
+        this.targets = targets
     }
 
     private var shaderProgramID: Int = 0
@@ -170,7 +175,7 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
                 activity.stopFinderIfStarted()
 
                 // Renders the augmentation
-                renderModel(projectionMatrix, devicePoseMatrix.data, modelMatrix.data)
+                renderModel(projectionMatrix, devicePoseMatrix.data, modelMatrix.data, textures.get(targets[result.trackable.name]))
 
                 SampleUtils.checkGLError("CloudReco renderFrame")
             }
@@ -182,7 +187,7 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
     }
 
 
-    private fun renderModel(projectionMatrix: FloatArray, viewMatrix: FloatArray, modelMatrix: FloatArray) {
+    private fun renderModel(projectionMatrix: FloatArray, viewMatrix: FloatArray, modelMatrix: FloatArray, texture: Texture?) {
         val textureIndex = 0
         val modelViewProjection = FloatArray(16)
 
@@ -217,7 +222,7 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glBindTexture(
             GLES20.GL_TEXTURE_2D,
-            textures["teapotBlue"]!!.mTextureID[0]
+            texture!!.mTextureID[0]
         )
         GLES20.glUniform1i(texSampler2DHandle, 0)
 
