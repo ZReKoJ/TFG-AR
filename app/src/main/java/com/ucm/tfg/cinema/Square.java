@@ -35,13 +35,13 @@ public class Square {
     private int mMVPMatrixHandle;
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
-    private float number = 5.5f;
+    private float unit = 25f;
     float squareCoords[] = {
-            -1 * number,  number, 0.0f,   // top left
-            -1 * number, -1 * number, 0.0f,   // bottom left
-            number, -1 * number, 0.0f,   // bottom right
-            number,  number, 0.0f }; // top right
-    private final short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
+            -2 * unit,  -1 * unit, 0 * unit,   // top left
+            2 * unit, -1 * unit, 0 * unit,   // bottom left
+            0 * unit, 2 * unit, 0 * unit,   // bottom right
+            0 * unit,  0 * unit, 10 * unit}; // top right
+    private final short drawOrder[] = { 0, 1, 2, 0, 2, 3, 0, 1, 3, 3, 2, 1 }; // order to draw vertices
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
     float color[] = { 0.2f, 0.709803922f, 0.898039216f, 1.0f };
     /**

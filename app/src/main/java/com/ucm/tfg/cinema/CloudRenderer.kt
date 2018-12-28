@@ -124,6 +124,7 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         )
 
         teapot = Teapot()
+        square = Square()
     }
 
 
@@ -136,7 +137,6 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         vuforiaAppSession.onSurfaceCreated();
         renderer.onSurfaceCreated();
-        square = Square()
     }
 
 
@@ -204,8 +204,7 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
     }
 
     private fun renderModel(projectionMatrix: FloatArray, viewMatrix: FloatArray, modelMatrix: FloatArray, texture: Texture?) {
-        val textureIndex = 0
-        val modelViewProjection = FloatArray(16)
+        /*val modelViewProjection = FloatArray(16)
 
         // Apply local transformation to our model
         Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, OBJECT_SCALE_FLOAT)
@@ -249,15 +248,29 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         )
 
         // finally draw the teapot
-        //GLES20.glDrawElements(
-        //    GLES20.GL_TRIANGLES, teapot.getNumObjectIndex(),
-        //    GLES20.GL_UNSIGNED_SHORT, teapot.getIndices()
-        //)
-
-        square.draw(modelViewProjection)
+        GLES20.glDrawElements(
+            GLES20.GL_TRIANGLES, teapot.getNumObjectIndex(),
+            GLES20.GL_UNSIGNED_SHORT, teapot.getIndices()
+        )
 
         // disable the enabled arrays
         GLES20.glDisableVertexAttribArray(vertexHandle)
-        GLES20.glDisableVertexAttribArray(textureCoordHandle)
+        GLES20.glDisableVertexAttribArray(textureCoordHandle)*/
+
+        val modelViewProjection = FloatArray(16)
+
+        // Apply local transformation to our model
+        Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, OBJECT_SCALE_FLOAT)
+        Matrix.scaleM(
+            modelMatrix, 0, OBJECT_SCALE_FLOAT,
+            OBJECT_SCALE_FLOAT, OBJECT_SCALE_FLOAT
+        )
+
+        // Combine device pose (view matrix) with model matrix
+        Matrix.multiplyMM(modelMatrix, 0, viewMatrix, 0, modelMatrix, 0)
+
+        // Do the final combination with the projection matrix
+        Matrix.multiplyMM(modelViewProjection, 0, projectionMatrix, 0, modelMatrix, 0)
+        square.draw(modelViewProjection)
     }
 }
