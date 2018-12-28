@@ -10,10 +10,18 @@ import com.ucm.tfg.cinema.SampleApplication.utils.Texture
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES20
+import android.util.Log
 import com.ucm.tfg.cinema.SampleApplication.utils.CubeShaders
 import com.ucm.tfg.cinema.SampleApplication.utils.SampleUtils
 import com.ucm.tfg.cinema.SampleApplication.utils.SampleMath
 import com.vuforia.*
+import java.nio.ByteOrder.nativeOrder
+import android.R.attr.order
+import java.nio.ByteBuffer
+import java.nio.ByteBuffer.allocateDirect
+import java.nio.ByteOrder
+
+
 
 
 class CloudRenderer constructor(session : SampleApplicationSession, activity : CloudRecoActivity) : GLSurfaceView.Renderer, SampleAppRendererControl {
@@ -22,6 +30,8 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
     private val vuforiaAppSession : SampleApplicationSession
     private val activity : CloudRecoActivity
     private val renderer : SampleAppRenderer
+
+    private lateinit var square : Square
 
     init {
         this.vuforiaAppSession = session
@@ -126,7 +136,14 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         vuforiaAppSession.onSurfaceCreated();
         renderer.onSurfaceCreated();
+        square = Square()
     }
+
+
+    private val mMVPMatrix = FloatArray(16)
+    private val mProjectionMatrix = FloatArray(16)
+    private val mViewMatrix = FloatArray(16)
+    private val mRotationMatrix = FloatArray(16)
 
     override fun onDrawFrame(gl: GL10?) {
         if (isActive) {
@@ -186,7 +203,6 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         Renderer.getInstance().end()
     }
 
-
     private fun renderModel(projectionMatrix: FloatArray, viewMatrix: FloatArray, modelMatrix: FloatArray, texture: Texture?) {
         val textureIndex = 0
         val modelViewProjection = FloatArray(16)
@@ -233,10 +249,12 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         )
 
         // finally draw the teapot
-        GLES20.glDrawElements(
-            GLES20.GL_TRIANGLES, teapot.getNumObjectIndex(),
-            GLES20.GL_UNSIGNED_SHORT, teapot.getIndices()
-        )
+        //GLES20.glDrawElements(
+        //    GLES20.GL_TRIANGLES, teapot.getNumObjectIndex(),
+        //    GLES20.GL_UNSIGNED_SHORT, teapot.getIndices()
+        //)
+
+        square.draw(modelViewProjection)
 
         // disable the enabled arrays
         GLES20.glDisableVertexAttribArray(vertexHandle)
