@@ -94,11 +94,12 @@ class CloudRecoActivity : Activity(), SampleApplicationControl {
         targets["usopp"] = "teapotBlue"
         targets["chopper"] = "teapotRed"
         targets["robin"] = "teapotBrass"
-        targets["Z"] = "teapotBlue"
+        targets["Z"] = "plane"
 
         textures["teapotBrass"] = Texture.loadTextureFromApk( "TextureTeapotBrass.png", assets)
         textures["teapotBlue"] = Texture.loadTextureFromApk( "TextureTeapotBlue.png", assets)
         textures["teapotRed"] = Texture.loadTextureFromApk( "TextureTeapotRed.png", assets)
+        textures["plane"] = Texture.loadTextureFromApk("vumark_texture.png", assets)
     }
 
     override fun doInitTrackers(): Boolean {
