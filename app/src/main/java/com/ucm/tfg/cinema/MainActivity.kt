@@ -15,5 +15,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, CloudRecoActivity::class.java)
             startActivity(intent)
         }
+
+        openGLButton.setOnClickListener {
+            val intent = Intent(this, OpenglActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

@@ -27,15 +27,13 @@ public class Square {
                     "void main() {" +
                     "  gl_FragColor = vColor;" +
                     "}";
-    private final FloatBuffer vertexBuffer;
-    private final ShortBuffer drawListBuffer;
     private final int mProgram;
     private int mPositionHandle;
     private int mColorHandle;
     private int mMVPMatrixHandle;
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
-    private float unit = 25f;
+    private float unit = 0.01f;
     float squareCoords[] = {
             -2 * unit,  -1 * unit, 0 * unit,   // top left
             2 * unit, -1 * unit, 0 * unit,   // bottom left
@@ -48,22 +46,6 @@ public class Square {
      * Sets up the drawing object data for use in an OpenGL ES context.
      */
     public Square() {
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 4 bytes per float)
-                squareCoords.length * 4);
-        bb.order(ByteOrder.nativeOrder());
-        vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(squareCoords);
-        vertexBuffer.position(0);
-        // initialize byte buffer for the draw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(
-                // (# of coordinate values * 2 bytes per short)
-                drawOrder.length * 2);
-        dlb.order(ByteOrder.nativeOrder());
-        drawListBuffer = dlb.asShortBuffer();
-        drawListBuffer.put(drawOrder);
-        drawListBuffer.position(0);
         // prepare shaders and OpenGL program
         int vertexShader = loadShader(
                 GLES20.GL_VERTEX_SHADER,
@@ -93,7 +75,7 @@ public class Square {
         GLES20.glVertexAttribPointer(
                 mPositionHandle, COORDS_PER_VERTEX,
                 GLES20.GL_FLOAT, false,
-                vertexStride, vertexBuffer);
+                vertexStride, getFloatBuffer(squareCoords));
         // get handle to fragment shader's vColor member
         mColorHandle = GLES20.glGetUniformLocation(mProgram, "vColor");
         // Set color for drawing the triangle
@@ -105,9 +87,7 @@ public class Square {
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
         //MyGLRenderer.checkGlError("glUniformMatrix4fv");
         // Draw the square
-        GLES20.glDrawElements(
-                GLES20.GL_TRIANGLES, drawOrder.length,
-                GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length, GLES20.GL_UNSIGNED_SHORT, getShortBuffer(drawOrder));
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
@@ -120,5 +100,29 @@ public class Square {
         GLES20.glShaderSource(shader, shaderCode);
         GLES20.glCompileShader(shader);
         return shader;
+    }
+
+    FloatBuffer getFloatBuffer(float[] data){
+        // (# of coordinate values * 4 bytes per float)
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(data.length * 4);
+        byteBuffer.order(ByteOrder.nativeOrder());
+
+        FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+        floatBuffer.put(data);
+        floatBuffer.position(0);
+
+        return floatBuffer;
+    }
+
+    ShortBuffer getShortBuffer(short[] data){
+        // (# of coordinate values * 2 bytes per short)
+        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(data.length * 2);
+        byteBuffer.order(ByteOrder.nativeOrder());
+
+        ShortBuffer shortBuffer = byteBuffer.asShortBuffer();
+        shortBuffer.put(data);
+        shortBuffer.position(0);
+
+        return shortBuffer;
     }
 }

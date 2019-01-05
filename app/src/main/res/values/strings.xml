@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Cinema</string>
     <string name="ar_button">AR</string>
+    <string name="opengl_button">Open GL</string>
     <string name="app_description">Vuforia Sample Applications</string>
 
     <string name="button_start">Start</string>

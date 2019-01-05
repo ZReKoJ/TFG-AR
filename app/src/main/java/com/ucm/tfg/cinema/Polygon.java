@@ -1,6 +1,7 @@
 package com.ucm.tfg.cinema;
 
 import android.opengl.GLES20;
+import android.opengl.GLES30;
 
 import javax.microedition.khronos.opengles.GL;
 import java.nio.ByteBuffer;
@@ -13,22 +14,40 @@ public class Polygon {
     private String vertexShaderCode =
             "uniform mat4 uMVPMatrix;" +
             "attribute vec4 vPosition;" +
+            //"attribute vec4 vColor;" +
+            //"varying vec4 color;" +
             "void main() {" +
-            "  gl_Position = uMVPMatrix * vPosition;" +
+            //"   vColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);" +
+            //"color = vColor;" +
+            "   gl_Position = uMVPMatrix * vPosition;" +
             "}";
 
     private String fragmentShaderCode =
+            "precision mediump float;" +
+            //"varying vec4 color;" +
+            //"in vec4 color;" +
             "void main()" +
             "{" +
             "   gl_FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);" +
+            //"   gl_FragColor = color;" +
             "}";
 
     private int program;
+    private int vertexShader;
+    private int fragmentShader;
+
+    private float unit = 0.5f;
 
     private float coords[] = {
-            0.5f,  0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f
+            unit,  unit, 0.0f,
+            unit, -unit, 0.0f,
+            -unit,  unit, 0.0f
+    };
+
+    private float colors[] = {
+            1f, 0f, 0f,
+            0f, 1f, 0f,
+            0f, 0f, 1f
     };
 
     private short order[] = {
@@ -36,9 +55,10 @@ public class Polygon {
     };
 
     public Polygon() {
-        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
+        vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
+        fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
         program = GLES20.glCreateProgram();
+
         GLES20.glAttachShader(program, vertexShader);
         GLES20.glAttachShader(program, fragmentShader);
         GLES20.glLinkProgram(program);
@@ -51,12 +71,17 @@ public class Polygon {
         GLES20.glEnableVertexAttribArray(position);
         GLES20.glVertexAttribPointer(position, 3, GLES20.GL_FLOAT, false, 3 * 4, getFloatBuffer(coords));
 
+        //int color = GLES20.glGetAttribLocation(program, "vColor");
+        //GLES20.glEnableVertexAttribArray(color);
+        //GLES20.glVertexAttribPointer(color, 3, GLES20.GL_FLOAT, false, 3 * 4, getFloatBuffer(colors));
+
         int mMVPMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix");
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, order.length, GLES20.GL_UNSIGNED_SHORT, getShortBuffer(order));
 
         GLES20.glDisableVertexAttribArray(position);
+        //GLES20.glDisableVertexAttribArray(color);
 
         //GLES20.glDeleteShader(vertexShader);
         //GLES20.glDeleteShader(fragmentShader);

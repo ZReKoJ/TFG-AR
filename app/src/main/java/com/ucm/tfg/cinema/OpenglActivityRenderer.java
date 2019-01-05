@@ -37,6 +37,7 @@ public class OpenglActivityRenderer extends OpenGLRenderer {
 
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 
+        square.draw(mvpMatrix);
         polygon.draw(mvpMatrix);
     }
 }

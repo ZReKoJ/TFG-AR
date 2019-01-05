@@ -45,6 +45,7 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
     private lateinit var targets: HashMap<String, String>
 
     private lateinit var teapot : Teapot
+    private lateinit var polygon: Polygon
 
     fun setTextures(textures: HashMap<String, Texture>) {
         this.textures = textures
@@ -127,6 +128,7 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         teapot = Teapot()
         square = Square()
         plane = Plane()
+        polygon = Polygon()
     }
 
 
@@ -259,23 +261,6 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         GLES20.glDisableVertexAttribArray(vertexHandle)
         GLES20.glDisableVertexAttribArray(textureCoordHandle)*/
 
-        /*val modelViewProjection = FloatArray(16)
-
-        // Apply local transformation to our model
-        Matrix.translateM(modelMatrix, 0, 0.0f, 0.0f, OBJECT_SCALE_FLOAT)
-        Matrix.scaleM(
-            modelMatrix, 0, OBJECT_SCALE_FLOAT,
-            OBJECT_SCALE_FLOAT, OBJECT_SCALE_FLOAT
-        )
-
-        // Combine device pose (view matrix) with model matrix
-        Matrix.multiplyMM(modelMatrix, 0, viewMatrix, 0, modelMatrix, 0)
-
-        // Do the final combination with the projection matrix
-        Matrix.multiplyMM(modelViewProjection, 0, projectionMatrix, 0, modelMatrix, 0)
-
-        square.draw(modelViewProjection, modelMatrix)*/
-
         val modelViewProjection = FloatArray(16)
 
         // Combine device pose (view matrix) with model matrix
@@ -284,42 +269,8 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         // Do the final combination with the projection matrix
         Matrix.multiplyMM(modelViewProjection, 0, projectionMatrix, 0, modelMatrix, 0)
 
-        // activate the shader program and bind the vertex/normal/tex coords
-        GLES20.glUseProgram(shaderProgramID)
+        square.draw(modelViewProjection)
+        polygon.draw(modelViewProjection)
 
-        GLES20.glVertexAttribPointer(
-            vertexHandle, 3, GLES20.GL_FLOAT,
-            false, 0, plane.getVertices()
-        )
-        GLES20.glVertexAttribPointer(
-            textureCoordHandle, 2,
-            GLES20.GL_FLOAT, false, 0, plane.getTexCoords()
-        )
-
-        GLES20.glEnableVertexAttribArray(vertexHandle)
-        GLES20.glEnableVertexAttribArray(textureCoordHandle)
-
-        // activate texture 0, bind it, and pass to shader
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture!!.mTextureID[0])
-        GLES20.glUniform1i(texSampler2DHandle, 0)
-        //GLES20.glUniform1f(calphaHandle, if (isMainVuMark) blinkVumark(false) else 1.0f)
-
-        // pass the model view matrix to the shader
-        GLES20.glUniformMatrix4fv(
-            mvpMatrixHandle, 1, false,
-            modelViewProjection, 0
-        )
-
-        // finally draw the plane
-        GLES20.glDrawElements(
-            GLES20.GL_TRIANGLES,
-            plane.getNumObjectIndex(), GLES20.GL_UNSIGNED_SHORT,
-            plane.getIndices()
-        )
-
-        // disable the enabled arrays
-        GLES20.glDisableVertexAttribArray(vertexHandle)
-        GLES20.glDisableVertexAttribArray(textureCoordHandle)
     }
 }
