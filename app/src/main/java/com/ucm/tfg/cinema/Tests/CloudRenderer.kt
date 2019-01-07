@@ -1,27 +1,18 @@
-package com.ucm.tfg.cinema
+package com.ucm.tfg.cinema.Tests
 
 import android.opengl.GLSurfaceView
 import android.opengl.Matrix;
 import com.ucm.tfg.cinema.SampleApplication.SampleAppRenderer
 import com.ucm.tfg.cinema.SampleApplication.SampleAppRendererControl
 import com.ucm.tfg.cinema.SampleApplication.SampleApplicationSession
-import com.ucm.tfg.cinema.SampleApplication.utils.Teapot
-import com.ucm.tfg.cinema.SampleApplication.utils.Texture
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import android.opengl.GLES20
-import android.util.Log
-import com.ucm.tfg.cinema.SampleApplication.utils.CubeShaders
-import com.ucm.tfg.cinema.SampleApplication.utils.SampleUtils
-import com.ucm.tfg.cinema.SampleApplication.utils.SampleMath
 import com.vuforia.*
-import java.nio.ByteOrder.nativeOrder
-import android.R.attr.order
-import java.nio.ByteBuffer
-import java.nio.ByteBuffer.allocateDirect
-import java.nio.ByteOrder
-
-
+import com.ucm.tfg.cinema.Polygon
+import com.ucm.tfg.cinema.SampleApplication.utils.*
+import com.ucm.tfg.cinema.Square
+import com.ucm.tfg.cinema.Tests.GLES20.GLES20RendererBuilder
 
 
 class CloudRenderer constructor(session : SampleApplicationSession, activity : CloudRecoActivity) : GLSurfaceView.Renderer, SampleAppRendererControl {
@@ -30,9 +21,6 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
     private val vuforiaAppSession : SampleApplicationSession
     private val activity : CloudRecoActivity
     private val renderer : SampleAppRenderer
-
-    private lateinit var square : Square
-    private lateinit var plane : Plane
 
     init {
         this.vuforiaAppSession = session
@@ -45,7 +33,6 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
     private lateinit var targets: HashMap<String, String>
 
     private lateinit var teapot : Teapot
-    private lateinit var polygon: Polygon
 
     fun setTextures(textures: HashMap<String, Texture>) {
         this.textures = textures
@@ -54,13 +41,6 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
     fun setTargets(targets: HashMap<String, String>) {
         this.targets = targets
     }
-
-    private var shaderProgramID: Int = 0
-    private var vertexHandle: Int = 0
-    private var textureCoordHandle: Int = 0
-    private var mvpMatrixHandle: Int = 0
-    private var texSampler2DHandle: Int = 0
-    private val OBJECT_SCALE_FLOAT = 0.003f
 
     private var isActive = false
 
@@ -103,6 +83,7 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
             )
         }
 
+        /*
         shaderProgramID = SampleUtils.createProgramFromShaderSrc(
             CubeShaders.CUBE_MESH_VERTEX_SHADER,
             CubeShaders.CUBE_MESH_FRAGMENT_SHADER
@@ -123,12 +104,9 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         texSampler2DHandle = GLES20.glGetUniformLocation(
             shaderProgramID,
             "texSampler2D"
-        )
+        )*/
 
-        teapot = Teapot()
-        square = Square()
-        plane = Plane()
-        polygon = Polygon()
+        //teapot = Teapot()
     }
 
 
@@ -142,12 +120,6 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         vuforiaAppSession.onSurfaceCreated();
         renderer.onSurfaceCreated();
     }
-
-
-    private val mMVPMatrix = FloatArray(16)
-    private val mProjectionMatrix = FloatArray(16)
-    private val mViewMatrix = FloatArray(16)
-    private val mRotationMatrix = FloatArray(16)
 
     override fun onDrawFrame(gl: GL10?) {
         if (isActive) {
@@ -262,15 +234,54 @@ class CloudRenderer constructor(session : SampleApplicationSession, activity : C
         GLES20.glDisableVertexAttribArray(textureCoordHandle)*/
 
         val modelViewProjection = FloatArray(16)
-
-        // Combine device pose (view matrix) with model matrix
         Matrix.multiplyMM(modelMatrix, 0, viewMatrix, 0, modelMatrix, 0)
-
-        // Do the final combination with the projection matrix
         Matrix.multiplyMM(modelViewProjection, 0, projectionMatrix, 0, modelMatrix, 0)
 
-        square.draw(modelViewProjection)
-        polygon.draw(modelViewProjection)
+        val vertexShaderCode =
+            "uniform mat4 uMVPMatrix;\n" +
+            "attribute vec3 vPosition;\n" +
+            "attribute vec3 vColor;\n" +
+            "varying vec4 myColor;\n" +
+            "void main()\n" +
+            "{\n" +
+                "gl_Position = uMVPMatrix * vec4(vPosition, 1.0f);\n" +
+                "myColor = vec4(vColor, 1.0f);\n" +
+            "}";
+
+        val fragmentShaderCode =
+            "precision mediump float;\n" +
+            "varying vec4 myColor;\n" +
+            "void main()\n" +
+            "{\n" +
+                "gl_FragColor = myColor;\n" +
+            "}"
+
+        val unit = 0.5f
+
+        var coords = floatArrayOf(
+            -unit, -unit, 0.0f,
+            unit, -unit, 0.0f,
+            -unit, unit, 0.0f
+        )
+
+        var colors = floatArrayOf(
+            1f, 0f, 0f,
+            0f, 1f, 0f,
+            0f, 0f, 1f
+        )
+
+        var order = shortArrayOf(
+            0, 1, 2
+        )
+
+        GLES20RendererBuilder()
+            .addVertexShader(vertexShaderCode)
+            .addFragmentShader(fragmentShaderCode)
+            .build()
+            .addFloatBuffer("vPosition", 3, false, coords)
+            .addFloatBuffer("vColor", 3, false, colors)
+            .addMatrix("uMVPMatrix", modelViewProjection)
+            .draw(order)
 
     }
 }

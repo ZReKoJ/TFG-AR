@@ -1,4 +1,4 @@
-package com.ucm.tfg.cinema
+package com.ucm.tfg.cinema.Tests
 
 import android.app.ActionBar
 import android.app.Activity

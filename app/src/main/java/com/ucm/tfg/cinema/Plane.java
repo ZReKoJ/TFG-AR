@@ -20,14 +20,26 @@ import java.nio.Buffer;
 class Plane extends MeshObject
 {
     // Data for drawing the 3D plane as overlay
-    private static final float planeVertices[] = { -0.5f, -0.5f, 0.0f, 0.5f,
-            -0.5f, 0.0f, 0.5f, 0.5f, 0.0f, -0.5f, 0.5f, 0.0f };
+    private static final float planeVertices[] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f,
+            -0.5f, 0.5f, 0.0f
+    };
     
-    private static final float planeTexcoords[] = { 0.0f, 0.0f, 1.0f, 0.0f,
-            1.0f, 1.0f, 0.0f, 1.0f };
+    private static final float planeTexcoords[] = {
+            0.0f, 0.0f,
+            1.0f, 0.0f,
+            1.0f, 1.0f,
+            0.0f, 1.0f
+    };
     
-    private static final float planeNormals[] = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f };
+    private static final float planeNormals[] = {
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f
+    };
     
     private static final short planeIndices[] = { 0, 1, 2, 0, 2, 3 };
 

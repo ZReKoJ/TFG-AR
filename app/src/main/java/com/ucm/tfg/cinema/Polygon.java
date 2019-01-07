@@ -11,7 +11,7 @@ import java.nio.ShortBuffer;
 
 public class Polygon {
 
-    private String vertexShaderCode =
+    public String vertexShaderCode =
             "uniform mat4 uMVPMatrix;" +
             "attribute vec4 vPosition;" +
             //"attribute vec4 vColor;" +
@@ -22,7 +22,7 @@ public class Polygon {
             "   gl_Position = uMVPMatrix * vPosition;" +
             "}";
 
-    private String fragmentShaderCode =
+    public String fragmentShaderCode =
             "precision mediump float;" +
             //"varying vec4 color;" +
             //"in vec4 color;" +
@@ -38,19 +38,19 @@ public class Polygon {
 
     private float unit = 0.5f;
 
-    private float coords[] = {
-            unit,  unit, 0.0f,
+    public float coords[] = {
+            -unit,  -unit, 0.0f,
             unit, -unit, 0.0f,
             -unit,  unit, 0.0f
     };
 
-    private float colors[] = {
+    public float colors[] = {
             1f, 0f, 0f,
             0f, 1f, 0f,
             0f, 0f, 1f
     };
 
-    private short order[] = {
+    public short order[] = {
             0, 1, 2
     };
 
